@@ -59,9 +59,7 @@ insert into order_details(order_details_id,order_id,product_id,quantity) values 
 insert into order_details(order_details_id,order_id,product_id,quantity) values ('14','9','10','3');
 insert into order_details(order_details_id,order_id,product_id,quantity) values ('15','10','1','1');
 
-
-
-
+--Fetch all the Customer Details along with the product names that the customer has ordered.
 1. select c.customer_id,c.customer_name,od.order_id,od.product_id,p.product_name from orders o
 join customer c on o.customer_id = c.customer_id
 join order_details od on o.order_id = od.order_id
@@ -86,7 +84,7 @@ join order_details od on o.order_id = od.order_id
 join product p on od.product_id = p.product_id								 )
 as prd on c.customer_id = prd.customer_id
 order by c.customer_id
-
+--Fetch Order_Id, Ordered_Date, Total Price of the order (product price*qty).
 
 2. select o.order_id, o.order_date, order_det.product_id,order_det.product_name,
 order_det.product_price,order_det.quantity, (order_det.product_price * order_det.quantity) as total_price from orders o
@@ -106,6 +104,7 @@ from orders o
 join  order_details od on o.order_id = od.order_id
 join product p on od.product_id = p.product_id
 order by o.order_id
+--Fetch the Customer Name, who has not placed any order
 
 3. select * from customer 
 where not customer_id  in (select customer_id from orders)
@@ -114,11 +113,13 @@ or
 select * from customer 
 where not customer_id  in (select customer_id from orders o, order_details od
 						  where o.order_id = od.order_id)
-						  
+--Fetch the Product Details without any order(purchase)
+	  
 						  4. select * from product 
 where not product_id  in (select product_id from  order_details
 						 )
 						 
+--Fetch the Customer name along with the total Purchase Amount
 						 
 5. select c.customer_id,c.customer_name,
 sum(COALESCE((ord.quantity*ord.product_price),0)) as total_price
@@ -145,11 +146,13 @@ group by c.customer_id
 order by c.customer_id
 
 
+--Fetch the Customer details, who has placed the first and last order
 6.	
 (select c.customer_id,c.customer_name,o.order_id,o.order_date from orders o,customer c where c.customer_id=o.customer_id  order by order_date asc limit 1)
 UNION ALL
 (select c.customer_id,c.customer_name,o.order_id,o.order_date from orders o,customer c where c.customer_id=o.customer_id order by order_date desc limit 1)
 
+--Fetch the customer details , who has placed more number of orders
 
 7.select c.customer_id,c.customer_name,order_count.ordercount,o.order_id from 
 (select order_id, count(order_id)as ordercount from order_details group by order_id
@@ -158,6 +161,8 @@ select max(mycount)  from (select count(order_id) as mycount from order_details 
 ) as order_count join orders o on o.order_id = order_count.order_id
 join customer c on c.customer_id = o.customer_id
 
+
+--Fetch the customer details, who has placed multiple orders in the same year
 8.
 select c.customer_id,c.customer_name, max(order_count) as max_order_count,oc.fullyear from
 (select o.customer_id as cust_id,count(*) as order_count,date_part('year', o.order_date) as fullyear 
@@ -170,8 +175,7 @@ join customer c on c.customer_id = oc.cust_id
 group by oc.fullyear,c.customer_id
 
 
-
-
+--Fetch the name of the month, in which more number of orders has been placed
 9.
 select moc.order_id,moc.max_order, to_char(o.order_date, 'Month') AS Month  from (
 select od.order_id,count(*) as max_order from order_details od
@@ -184,6 +188,8 @@ select count(*) as order_count from order_details group by order_id
 ) as moc join orders o on moc.order_id=o.order_id
 
 
+
+--Fetch the maximum priced Ordered Product
 10.
 select  od.order_id, sum(od.quantity*p.product_price) as max_price,p.product_name from order_details od
 join product p on od.product_id = p.product_id
@@ -196,5 +202,19 @@ select max(max_price) from (
 ) as mxprice
 )
 order by od.order_id
+
+
+
+
+
+
+					
+
+
+
+
+
+
+
 
 
