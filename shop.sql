@@ -1,3 +1,7 @@
+CREATE TABLE customer (
+  customer_id int(11) NOT NULL,
+  customer_name varchar(200) DEFAULT NULL
+) 
 insert into customer(customer_id,customer_name) values ('1','John');
 insert into customer(customer_id,customer_name) values ('2','Smith');
 insert into customer(customer_id,customer_name) values ('3','Ricky');
@@ -13,7 +17,17 @@ create table product(
 	product_price bigint not null,
 	
 );
-
+INSERT INTO product(product_id, product_name, product_price) VALUES
+(1, 'Television', 19000),
+(2, 'DVD', 3600),
+(3, 'Washing Machine', 7600),
+(4, 'Computer', 35900),
+(5, 'Ipod', 3210),
+(6, 'Panasonic Phone', 2100),
+(7, 'Chair', 360),
+(8, 'Table', 490),
+(9, 'Sound System', 12050),
+(10, 'Home Theatre', 19350);
 create table orders (
 	order_id int not null primary key,
 	customer_id int not null,
